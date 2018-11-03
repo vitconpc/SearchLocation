@@ -3,7 +3,6 @@ package vn.com.example.locationbase.data.source;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -20,7 +19,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 
-import vn.com.example.locationbase.data.model.User;
+import vn.com.example.locationbase.data.model.user.User;
 import vn.com.example.locationbase.data.source.remote.RegisterDataSource;
 
 public class RegisterRemoteDataSource implements RegisterDataSource.RegisterRemote {

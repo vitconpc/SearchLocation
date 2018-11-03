@@ -14,7 +14,7 @@ import com.google.firebase.database.ValueEventListener;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import vn.com.example.locationbase.data.model.PlaceResultResponse;
+import vn.com.example.locationbase.data.model.place.PlaceResultResponse;
 import vn.com.example.locationbase.data.source.remote.HomeDataSource;
 import vn.com.example.locationbase.service.APIUtils;
 import vn.com.example.locationbase.service.GoogleMapInterfaceAPI;
@@ -89,17 +89,17 @@ public class HomeRemoteDataSource implements HomeDataSource.HomeRemote {
 
     @Override
     public void searchNearBy(LatLng location, float range, String type, String keyWord, final HomeDataSource.HomeFetchData listener) {
-        String locate = location.latitude+","+location.longitude;
-        mApi.searchNearBy(locate,range,type,keyWord,KEY).enqueue(new Callback<PlaceResultResponse>() {
-            @Override
-            public void onResponse(Call<PlaceResultResponse> call, Response<PlaceResultResponse> response) {
-                listener.searchNearBySuccess(response.body());
-            }
-
-            @Override
-            public void onFailure(Call<PlaceResultResponse> call, Throwable t) {
-                listener.searchNearByFail("Vui lòng kiểm tra lại kết nối mạng");
-            }
-        });
+//        String locate = location.latitude+","+location.longitude;
+//        mApi.searchNearBy(locate,range,type,keyWord,KEY).enqueue(new Callback<PlaceResultResponse>() {
+////            @Override
+////            public void onResponse(Call<PlaceResultResponse> call, Response<PlaceResultResponse> response) {
+////                listener.searchNearBySuccess(response.body());
+////            }
+////
+////            @Override
+////            public void onFailure(Call<PlaceResultResponse> call, Throwable t) {
+////                listener.searchNearByFail("Vui lòng kiểm tra lại kết nối mạng");
+////            }
+////        });
     }
 }

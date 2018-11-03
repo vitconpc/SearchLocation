@@ -1,9 +1,12 @@
-package vn.com.example.locationbase.data.model;
+package vn.com.example.locationbase.data.model.direction;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Viewport {
+import vn.com.example.locationbase.data.model.place.Northeast;
+import vn.com.example.locationbase.data.model.place.Southwest;
+
+public class Bounds {
     @SerializedName("northeast")
     @Expose
     private Northeast northeast;

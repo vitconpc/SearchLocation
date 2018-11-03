@@ -1,6 +1,6 @@
 package vn.com.example.locationbase.data.source.remote;
 
-import vn.com.example.locationbase.data.model.User;
+import vn.com.example.locationbase.data.model.user.User;
 
 public interface RegisterDataSource {
     interface RegisterRemote {

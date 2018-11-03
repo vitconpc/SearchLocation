@@ -7,5 +7,5 @@ public class Constants {
 
     public static final String RANGE = "RANGE";
     public static final String TYPE = "TYPE";
-    public static final String KEY_WORD = "KEY_WORD";
+    public static final String SEARCH_LOCATION = "SEARCH_LOCATION";
 }

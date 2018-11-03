@@ -1,4 +1,4 @@
-package vn.com.example.locationbase.data.model;
+package vn.com.example.locationbase.data.model.user;
 
 public class User {
     private String name;
