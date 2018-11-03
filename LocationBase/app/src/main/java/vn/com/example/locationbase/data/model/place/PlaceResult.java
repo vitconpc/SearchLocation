@@ -1,11 +1,14 @@
-package vn.com.example.locationbase.data.model;
+package vn.com.example.locationbase.data.model.place;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class PlaceResult {
+public class PlaceResult implements Parcelable {
     @SerializedName("geometry")
     @Expose
     private Geometry geometry;
@@ -48,6 +51,34 @@ public class PlaceResult {
     @SerializedName("vicinity")
     @Expose
     private String vicinity;
+
+    protected PlaceResult(Parcel in) {
+        geometry = in.readParcelable(Geometry.class.getClassLoader());
+        openingHours = in.readParcelable(OpeningHours.class.getClassLoader());
+        plusCode = in.readParcelable(PlusCode.class.getClassLoader());
+        icon = in.readString();
+        id = in.readString();
+        name = in.readString();
+        placeId = in.readString();
+        priceLevel = in.readInt();
+        rating = in.readDouble();
+        reference = in.readString();
+        scope = in.readString();
+        types = in.createStringArrayList();
+        vicinity = in.readString();
+    }
+
+    public static final Creator<PlaceResult> CREATOR = new Creator<PlaceResult>() {
+        @Override
+        public PlaceResult createFromParcel(Parcel in) {
+            return new PlaceResult(in);
+        }
+
+        @Override
+        public PlaceResult[] newArray(int size) {
+            return new PlaceResult[size];
+        }
+    };
 
     public Geometry getGeometry() {
         return geometry;
@@ -159,5 +190,27 @@ public class PlaceResult {
 
     public void setVicinity(String vicinity) {
         this.vicinity = vicinity;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(geometry, flags);
+        dest.writeParcelable(openingHours, flags);
+        dest.writeParcelable(plusCode, flags);
+        dest.writeString(icon);
+        dest.writeString(id);
+        dest.writeString(name);
+        dest.writeString(placeId);
+        dest.writeInt(priceLevel);
+        dest.writeDouble(rating);
+        dest.writeString(reference);
+        dest.writeString(scope);
+        dest.writeStringList(types);
+        dest.writeString(vicinity);
     }
 }

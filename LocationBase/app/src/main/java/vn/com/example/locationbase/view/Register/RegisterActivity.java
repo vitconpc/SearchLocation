@@ -19,7 +19,7 @@ import android.widget.Toast;
 import java.util.Random;
 
 import vn.com.example.locationbase.R;
-import vn.com.example.locationbase.data.model.User;
+import vn.com.example.locationbase.data.model.user.User;
 import vn.com.example.locationbase.view.login.LoginActivity;
 
 public class RegisterActivity extends AppCompatActivity implements RegisterContact.View {

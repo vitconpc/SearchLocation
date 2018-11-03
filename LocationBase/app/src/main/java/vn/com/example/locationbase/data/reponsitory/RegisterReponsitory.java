@@ -1,6 +1,6 @@
 package vn.com.example.locationbase.data.reponsitory;
 
-import vn.com.example.locationbase.data.model.User;
+import vn.com.example.locationbase.data.model.user.User;
 import vn.com.example.locationbase.data.source.RegisterRemoteDataSource;
 import vn.com.example.locationbase.data.source.remote.RegisterDataSource;
 

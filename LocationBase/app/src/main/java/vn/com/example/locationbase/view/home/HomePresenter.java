@@ -2,7 +2,7 @@ package vn.com.example.locationbase.view.home;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import vn.com.example.locationbase.data.model.PlaceResultResponse;
+import vn.com.example.locationbase.data.model.place.PlaceResultResponse;
 import vn.com.example.locationbase.data.reponsitory.HomeReponsitory;
 import vn.com.example.locationbase.data.source.remote.HomeDataSource;
 

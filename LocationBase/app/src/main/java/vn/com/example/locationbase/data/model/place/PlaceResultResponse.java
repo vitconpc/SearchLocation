@@ -1,4 +1,4 @@
-package vn.com.example.locationbase.data.model;
+package vn.com.example.locationbase.data.model.place;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

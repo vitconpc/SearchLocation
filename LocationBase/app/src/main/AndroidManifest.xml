@@ -40,7 +40,6 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
-        <activity android:name=".view.SelectionRequiredActivity" />
         <activity android:name=".view.login.LoginActivity" />
         <activity android:name=".view.Register.RegisterActivity" />
         <activity android:name=".view.search_near_by.SearchKeyActivity"></activity>

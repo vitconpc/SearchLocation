@@ -3,7 +3,6 @@ package vn.com.example.locationbase.view.home;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,15 +33,20 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import vn.com.example.locationbase.R;
 import vn.com.example.locationbase.common.Constants;
-import vn.com.example.locationbase.data.model.PlaceResult;
-import vn.com.example.locationbase.data.model.PlaceResultResponse;
+import vn.com.example.locationbase.data.model.place.Location;
+import vn.com.example.locationbase.data.model.place.PlaceResult;
+import vn.com.example.locationbase.data.model.place.PlaceResultResponse;
 import vn.com.example.locationbase.view.login.LoginActivity;
 import vn.com.example.locationbase.view.search_near_by.SearchKeyActivity;
 
@@ -57,11 +62,11 @@ public class HomeActivity extends AppCompatActivity
     private TextView textName;
     private TextView textEmail;
     private ImageView imageAvatar;
-    LatLng myLocation = new LatLng(20.968821, 105.785142);
+    private Location myLocation;
     private GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
-    private Location lastLocation;
     private Marker currentLocationMarker;
+    private List<PlaceResult> results;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,24 +78,31 @@ public class HomeActivity extends AppCompatActivity
 
     private void initView() {
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
         View header = navigationView.getHeaderView(0);
         textName = header.findViewById(R.id.txt_user_name);
         textEmail = header.findViewById(R.id.txt_email_address);
         imageAvatar = header.findViewById(R.id.img_avatar);
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+
         presenter = new HomePresenter(this);
+        myLocation = new Location();
+        myLocation.setLat(20.968821);
+        myLocation.setLng(105.785142);
+        results = new ArrayList<>();
     }
 
     @Override
@@ -139,7 +151,7 @@ public class HomeActivity extends AppCompatActivity
             presenter.LogOut();
         } else if (id == R.id.nav_search_near_by_me) {
             Intent intent = new Intent(HomeActivity.this, SearchKeyActivity.class);
-            intent.putExtra(Constants.SEARCH_NEARBY, Constants.SEARCH_ME);
+            intent.putExtra(Constants.SEARCH_NEARBY, myLocation);
             startActivityForResult(intent, CODE_SEARCH_ME);
         } else if (id == R.id.nav_location_favorite) {
             Toast.makeText(this, "Comming soon", Toast.LENGTH_SHORT).show();
@@ -155,7 +167,6 @@ public class HomeActivity extends AppCompatActivity
     }
 
     //todo get map ready
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -168,14 +179,14 @@ public class HomeActivity extends AppCompatActivity
 //        .fillColor(Color.parseColor("#2271cce7")));
 
         if (ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_CODE);
-            return;
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_CODE);
+            }
+        } else {
+            mMap.setMyLocationEnabled(true);
+            buildGoogleApiClient();
         }
-        buildGoogleApiClient();
-        mMap.setMyLocationEnabled(true);
 
     }
 
@@ -199,7 +210,6 @@ public class HomeActivity extends AppCompatActivity
         Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
     }
 
-    //check Login
     @Override
     public void LoginSuccess() {
         Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
@@ -243,29 +253,24 @@ public class HomeActivity extends AppCompatActivity
                 if (data == null) {
                     return;
                 }
-                int code = data.getIntExtra(Constants.SEARCH_NEARBY, 1);
-                float range = data.getFloatExtra(Constants.RANGE, 1000);
-                String type = data.getStringExtra(Constants.TYPE);
-                String keyword = data.getStringExtra(Constants.KEY_WORD);
-                if (code == 1) {
-                    presenter.searchNearBy(myLocation, range, type, keyword);
-//                    mMap.addMarker(new MarkerOptions().position(myLocation).title("Nhà của mình"));
-//                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 18));
-//                    mMap.addCircle(new CircleOptions().center(myLocation)
-//                            .radius(range)
-//                            .strokeWidth(5)
-//                            .strokeColor(Color.GREEN)
-//                            .fillColor(Color.parseColor("#2271cce7")));
-                } else {
-//                    mMap.addMarker(new MarkerOptions().position(myLocation).title("Nhà của mình"));
-//                    mMap.addCircle(new CircleOptions().center(otherLocation)
-//                            .radius(range)
-//                            .strokeWidth(5)
-//                            .strokeColor(Color.GREEN)
-//                            .fillColor(Color.parseColor("#2271cce7")));
-                }
-                break;
+                results = data.getParcelableArrayListExtra(Constants.SEARCH_NEARBY);
+                mMap.clear();
+                Location location = data.getParcelableExtra(Constants.SEARCH_LOCATION);
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLat(),location.getLng()),15));
+                drawMarker(results);
             }
+            break;
+        }
+    }
+
+    private void drawMarker(List<PlaceResult> results) {
+        for (int i = 0; i < results.size(); i++) {
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.title(results.get(i).getName()+" "+ results.get(i).getVicinity());
+            markerOptions.position(new LatLng(results.get(i).getGeometry().getLocation().getLat(),
+                    results.get(i).getGeometry().getLocation().getLng()));
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+            mMap.addMarker(markerOptions);
         }
     }
 
@@ -273,10 +278,8 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (grantResults[0] != PackageManager.PERMISSION_GRANTED
-                && grantResults[1] != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION
-                    , Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_CODE);
+        if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_CODE);
         }
     }
 
@@ -284,9 +287,9 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         locationRequest = new LocationRequest();
-        locationRequest.setInterval(1100);
-        locationRequest.setFastestInterval(1100);
-        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        locationRequest.setInterval(3000);
+        locationRequest.setFastestInterval(3000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
@@ -295,12 +298,12 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        Toast.makeText(this, "connection suspened", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        Toast.makeText(this, "connection fail", Toast.LENGTH_SHORT).show();
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -312,19 +315,34 @@ public class HomeActivity extends AppCompatActivity
         googleApiClient.connect();
     }
 
+//    @Override
+//    public void onLocationChanged(Location location) {
+//        lastLocation = location;
+//        myLocation
+//        if (currentLocationMarker != null) {
+//            currentLocationMarker.remove();
+//        }
+//        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+//        MarkerOptions markerOptions = new MarkerOptions();
+//        markerOptions.position(latLng);
+//        markerOptions.title("current User location");
+//
+//        currentLocationMarker = mMap.addMarker(markerOptions);
+////        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+////        mMap.animateCamera(CameraUpdateFactory.zoomBy(14));
+//    }
+
     @Override
-    public void onLocationChanged(Location location) {
-        lastLocation = location;
-        if (currentLocationMarker!=null){
+    public void onLocationChanged(android.location.Location location) {
+        myLocation.setLat(location.getLatitude());
+        myLocation.setLng(location.getLongitude());
+        if (currentLocationMarker != null) {
             currentLocationMarker.remove();
         }
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("current User location");
-
         currentLocationMarker = mMap.addMarker(markerOptions);
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-//        mMap.animateCamera(CameraUpdateFactory.zoomBy(14));
     }
 }
