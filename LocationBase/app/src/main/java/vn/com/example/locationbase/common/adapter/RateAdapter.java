@@ -21,13 +21,13 @@ public class RateAdapter extends BaseAdapter {
     public RateAdapter( Context context) {
         this.context = context;
         rates = new ArrayList<>();
-        rates.add(new RateItem(4.5f,"> 4.5"));
-        rates.add(new RateItem(4.0f,"> 4.0"));
-        rates.add(new RateItem(3.5f,"> 3.5"));
-        rates.add(new RateItem(3.0f,"> 3.0"));
-        rates.add(new RateItem(2.5f,"> 2.5"));
-        rates.add(new RateItem(2.0f,"> 2.0"));
         rates.add(new RateItem(0.0f,"> 0.0"));
+        rates.add(new RateItem(2.0f,"> 2.0"));
+        rates.add(new RateItem(2.5f,"> 2.5"));
+        rates.add(new RateItem(3.0f,"> 3.0"));
+        rates.add(new RateItem(3.5f,"> 3.5"));
+        rates.add(new RateItem(4.0f,"> 4.0"));
+        rates.add(new RateItem(4.5f,"> 4.5"));
     }
 
     @Override

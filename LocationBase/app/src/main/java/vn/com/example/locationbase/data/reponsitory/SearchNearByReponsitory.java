@@ -1,5 +1,7 @@
 package vn.com.example.locationbase.data.reponsitory;
 
+import android.util.Log;
+
 import vn.com.example.locationbase.data.model.place.Location;
 import vn.com.example.locationbase.data.model.place.PlaceResult;
 import vn.com.example.locationbase.data.source.SearchNearByDataSource;
@@ -19,7 +21,7 @@ public class SearchNearByReponsitory {
         }
         return instance;
     }
-
+    //todo call dataSource
     public void searchPlaceNearBy(Location location, int time, String keyword, String vehicle, String type, float rate,
                                   SearchNearByRemote.SearchNearByFetchData listener, String nextPageToken) {
         dataSource.searchPlaceNearBy(location, time, keyword, vehicle, type, rate, listener, nextPageToken);

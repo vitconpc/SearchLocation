@@ -1,8 +1,5 @@
 package vn.com.example.locationbase.view.search_near_by;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import vn.com.example.locationbase.data.model.place.Location;
 import vn.com.example.locationbase.data.model.place.PlaceResult;
 import vn.com.example.locationbase.data.model.place.PlaceResultResponse;
@@ -22,13 +19,13 @@ public class SearchKeyPreSenter implements SearchKeyContact.Presenter, SearchNea
     @Override
     public void onSearchPlace(Location location, int time, String keyword, String vehicle, String type, float rate,
                               String nextPageToken) {
+        //todo call reponsitory
         reponsitory.searchPlaceNearBy(location, time, keyword, vehicle, type, rate, this, nextPageToken);
     }
 
     @Override
     public void searchPlaceSuccess(PlaceResultResponse response, Location location, int time,
-                                   String keyword, String vehicle, String type, float rate, String nextPageToken) {
-
+                                   String keyword, String vehicle, String type, float rate) {
         for (int i = 0; i < response.getResults().size(); i++) {
             PlaceResult result = response.getResults().get(i);
             if (result.getRating() >= rate) {
@@ -36,14 +33,10 @@ public class SearchKeyPreSenter implements SearchKeyContact.Presenter, SearchNea
             }
         }
         if (response.getNextPageToken() != null) {
-            reponsitory.searchPlaceNearBy(location, time, keyword, vehicle, type
-                    , rate, this, response.getNextPageToken());
+            reponsitory.searchPlaceNearBy(location, time, keyword, vehicle, type, rate, this, response.getNextPageToken());
+        }else {
+            view.onSearchStop();
         }
-    }
-
-    @Override
-    public void searchPlaceEmpty() {
-        view.onSearchStop();
     }
 
     @Override

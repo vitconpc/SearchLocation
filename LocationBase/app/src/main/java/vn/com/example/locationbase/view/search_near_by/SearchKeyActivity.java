@@ -40,7 +40,7 @@ public class SearchKeyActivity extends AppCompatActivity implements View.OnClick
     private ProgressDialog dialog;
 
     private String vehicle = "driving";
-    private RateItem itemRate = new RateItem(4.5f, " > 4.5");
+    private RateItem itemRate = new RateItem(0.0f, " > 0.0");
     private TypeItem itemType = new TypeItem("restaurant", "Nhà Hàng");
 
     @Override
@@ -119,11 +119,9 @@ public class SearchKeyActivity extends AppCompatActivity implements View.OnClick
             return;
         }
         dialog.show();
+        //todo call search nearby
         preSenter.onSearchPlace(location, Integer.valueOf(edtTime.getText().toString().trim()),
-                edtKeyword.getText().toString(), vehicle, itemType.getValue(), itemRate.getValue(), "");
-//        Log.d("aaaaaa", "Search: " + itemRate.getValue());
-//        Log.d("aaaaaa", "Search: " + vehicle);
-//        Log.d("aaaaaa", "Search: " + itemType.getValue());
+                edtKeyword.getText().toString().trim(), vehicle, itemType.getValue(), itemRate.getValue(), "");
     }
 
     @Override

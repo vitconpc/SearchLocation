@@ -33,6 +33,20 @@
     <string name="enter_repassword">Nhập lại mật khẩu</string>
     <string name="code_id">Mã code: 12345678</string>
     <string name="logout_success">Đăng xuất thành công</string>
-    <string name="not_login">Không đăng nhập</string>
+    <string name="not_login">Chưa đăng nhập</string>
     <string name="loggined">Bạn đã đăng nhập</string>
+    <string name="auto_locate_failed">Không thể xác định vị trí hiện tại</string>
+    <string name="not_select_location">Bạn chưa chọn vị trí</string>
+    <string name="check_connection">Vui lòng kiểm tra lại mạng</string>
+    <string name="enter_time">Nhập thời gian(phút)</string>
+    <string name="driving">Lái xe</string>
+    <string name="walking">Đi bộ</string>
+    <string name="bus">Xe Bus</string>
+    <string name="bycicle">Xe đạp</string>
+    <string name="enter_keyword">Nhập từ khóa</string>
+    <string name="cancel">Hủy bỏ</string>
+    <string name="search">Tìm kiếm</string>
+    <string name="save">Lưu</string>
+    <string name="direction">Chỉ đường</string>
+    <string name="restaurant">Nhà hàng</string>
 </resources>

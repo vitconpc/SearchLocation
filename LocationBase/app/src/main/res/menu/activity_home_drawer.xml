@@ -2,37 +2,44 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
-
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_login"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_login"
             android:title="Đăng nhập" />
         <item
-            android:id="@+id/nav_logout"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Đăng xuất" />
+            android:visible="false"
+            android:id="@+id/nav_account"
+            android:icon="@drawable/ic_account"
+            android:title="Tài khoản" />
         <item
             android:id="@+id/nav_search_near_by_me"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_search"
             android:title="Tìm kiếm quanh bạn" />
         <item
             android:id="@+id/nav_location_favorite"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_favorite"
             android:title="Địa điểm ưu thích" />
+        <item
+            android:id="@+id/nav_clear_marker"
+            android:icon="@drawable/ic_clear"
+            android:title="Xóa các điểm đánh dấu" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="Account">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:id="@+id/nav_register"
+                android:icon="@drawable/ic_register"
+                android:title="Đăng ký" />
             <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:id="@+id/nav_change_password"
+                android:icon="@drawable/ic_change_password"
+                android:title="Đổi mật khẩu" />
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_logout"
+                android:title="Đăng xuất" />
         </menu>
     </item>
-
 </menu>
