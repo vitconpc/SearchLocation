@@ -2,6 +2,7 @@ package vn.com.example.locationbase.data.reponsitory;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import vn.com.example.locationbase.data.model.place.Location;
 import vn.com.example.locationbase.data.source.HomeRemoteDataSource;
 import vn.com.example.locationbase.data.source.remote.HomeDataSource;
 
@@ -35,5 +36,13 @@ public class HomeReponsitory {
     public void searchNearBy(LatLng location,float range,String type, String keyword
             ,HomeDataSource.HomeFetchData listener){
         datasource.searchNearBy(location,range,type,keyword,listener);
+    }
+
+    public void getAddress(LatLng latLng, HomeDataSource.HomeFetchData listener){
+        datasource.getAddress(latLng,listener);
+    }
+
+    public void getDirection(LatLng origin, LatLng destination, HomeDataSource.HomeFetchData listener){
+        datasource.getDirection(origin,destination,listener);
     }
 }

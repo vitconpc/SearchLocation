@@ -37,12 +37,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".MapsActivity"
-            android:label="@string/title_activity_maps" />
         <activity android:name=".view.login.LoginActivity" />
         <activity android:name=".view.Register.RegisterActivity" />
-        <activity android:name=".view.search_near_by.SearchKeyActivity"></activity>
+        <activity android:name=".view.search_near_by.SearchKeyActivity" />
+        <activity android:name=".view.update_infor.UpdateInforActivity" />
+        <activity android:name=".view.splash.SplashActivity" />
+        <activity android:name=".view.favorite.FavoriteActivity" />
+        <activity android:name=".view.account.AccountActivity"></activity>
     </application>
 
 </manifest>

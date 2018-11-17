@@ -14,9 +14,11 @@ import com.google.firebase.database.ValueEventListener;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import vn.com.example.locationbase.data.model.place.PlaceResultResponse;
+import vn.com.example.locationbase.data.model.direction.DirectionResultResponse;
+import vn.com.example.locationbase.data.model.place.GoogleAddressResponse;
+import vn.com.example.locationbase.data.model.place.Location;
 import vn.com.example.locationbase.data.source.remote.HomeDataSource;
-import vn.com.example.locationbase.service.APIUtils;
+import vn.com.example.locationbase.service.GoogleMapApiUtils;
 import vn.com.example.locationbase.service.GoogleMapInterfaceAPI;
 
 public class HomeRemoteDataSource implements HomeDataSource.HomeRemote {
@@ -29,7 +31,7 @@ public class HomeRemoteDataSource implements HomeDataSource.HomeRemote {
     private String KEY = "AIzaSyBqo1CVj_866CQTVT1lCwXVBog4fCVtUGc";
 
     public HomeRemoteDataSource() {
-        mApi = APIUtils.getInstance();
+        mApi = GoogleMapApiUtils.getInstance();
     }
 
     public static synchronized HomeRemoteDataSource getInstance() {
@@ -61,9 +63,8 @@ public class HomeRemoteDataSource implements HomeDataSource.HomeRemote {
                     current_user_name = dataSnapshot.child(user.getUid()).child("name").getValue(String.class);
                     current_user_email = dataSnapshot.child(user.getUid()).child("email").getValue(String.class);
                     current_user_avatarUrl = dataSnapshot.child(user.getUid()).child("avatarUri").getValue(String.class);
-                    listener.getDataSuccess(current_user_name,current_user_email,current_user_avatarUrl);
-                }
-                else listener.getDataError("Không có người dùng");
+                    listener.getDataSuccess(current_user_name, current_user_email, current_user_avatarUrl);
+                } else listener.getDataError("Không có người dùng");
 //                txtName.setText(current_user_name);
 //                txtEmail.setText(current_user_email);
 //                Picasso.get().load(current_user_avatarUrl).into(imgAvatar);
@@ -80,9 +81,9 @@ public class HomeRemoteDataSource implements HomeDataSource.HomeRemote {
     public void checkLogin(HomeDataSource.HomeFetchData listener) {
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
-        if (user == null){
+        if (user == null) {
             listener.LoginSuccess();
-        }else {
+        } else {
             listener.LoginFail();
         }
     }
@@ -101,5 +102,41 @@ public class HomeRemoteDataSource implements HomeDataSource.HomeRemote {
 ////                listener.searchNearByFail("Vui lòng kiểm tra lại kết nối mạng");
 ////            }
 ////        });
+    }
+
+    @Override
+    public void getAddress(LatLng location, final HomeDataSource.HomeFetchData listener) {
+        String locate = location.latitude + "," + location.longitude;
+        mApi.getAddress(locate, KEY).enqueue(new Callback<GoogleAddressResponse>() {
+            @Override
+            public void onResponse(Call<GoogleAddressResponse> call, Response<GoogleAddressResponse> response) {
+                listener.getAddressSucess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<GoogleAddressResponse> call, Throwable t) {
+                listener.getAddressFail();
+            }
+        });
+    }
+
+    @Override
+    public void getDirection(LatLng origin, LatLng destination, final HomeDataSource.HomeFetchData listener) {
+        String startLocation = origin.latitude + "," + origin.longitude;
+        String endLocation = destination.latitude + "," + destination.longitude;
+
+        mApi.getDirection(startLocation, endLocation, "driving", KEY)
+                .enqueue(new Callback<DirectionResultResponse>() {
+                    @Override
+                    public void onResponse(Call<DirectionResultResponse> call, Response<DirectionResultResponse> response) {
+                        listener.getDirectionSuccess(response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<DirectionResultResponse> call, Throwable t) {
+                        listener.getDirectionFail();
+                    }
+                });
+
     }
 }

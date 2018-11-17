@@ -15,9 +15,7 @@ public interface SearchNearByRemote {
 
     interface SearchNearByFetchData {
         void searchPlaceSuccess(PlaceResultResponse response, Location location, int time, String keyword, String vehicle,
-                                String type, float rate, String nextPageToken);
-
-        void searchPlaceEmpty();
+                                String type, float rate);
 
         void searchPlaceError();
 

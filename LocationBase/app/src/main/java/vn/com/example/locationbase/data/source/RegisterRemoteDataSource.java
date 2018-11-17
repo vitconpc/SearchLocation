@@ -102,7 +102,9 @@ public class RegisterRemoteDataSource implements RegisterDataSource.RegisterRemo
                                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                         @Override
                                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                            taskSnapshot.getDownloadUrl();
                                             sendVerificationEmail(listener);
+
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
                                 @Override

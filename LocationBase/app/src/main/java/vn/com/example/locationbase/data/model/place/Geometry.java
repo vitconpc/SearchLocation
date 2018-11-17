@@ -15,6 +15,9 @@ public class Geometry implements Parcelable {
     private Viewport viewport;
 
 
+    public Geometry() {
+    }
+
     protected Geometry(Parcel in) {
         location = in.readParcelable(Location.class.getClassLoader());
         viewport = in.readParcelable(Viewport.class.getClassLoader());

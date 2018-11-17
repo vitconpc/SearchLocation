@@ -8,7 +8,7 @@ import vn.com.example.locationbase.data.model.place.Location;
 import vn.com.example.locationbase.data.model.place.PlaceResult;
 import vn.com.example.locationbase.data.model.place.PlaceResultResponse;
 import vn.com.example.locationbase.data.source.remote.SearchNearByRemote;
-import vn.com.example.locationbase.service.APIUtils;
+import vn.com.example.locationbase.service.GoogleMapApiUtils;
 import vn.com.example.locationbase.service.GoogleMapInterfaceAPI;
 
 public class SearchNearByDataSource implements SearchNearByRemote.SearchNearByDataSource {
@@ -18,7 +18,7 @@ public class SearchNearByDataSource implements SearchNearByRemote.SearchNearByDa
     private String KEY = "AIzaSyBqo1CVj_866CQTVT1lCwXVBog4fCVtUGc";
 
     public SearchNearByDataSource() {
-        interfaceAPI = APIUtils.getInstance();
+        interfaceAPI = GoogleMapApiUtils.getInstance();
     }
 
     public synchronized static SearchNearByDataSource getInstance() {
@@ -28,21 +28,19 @@ public class SearchNearByDataSource implements SearchNearByRemote.SearchNearByDa
         return instance;
     }
 
+    //todo call Retrofit, return result in listener fetchdata
     @Override
     public void searchPlaceNearBy(final Location location, final int time, final String keyword, final String vehicle,
                                   final String type, final float rate,
-                                  final SearchNearByRemote.SearchNearByFetchData listener, final String nextPageToken) {
-        String place = location.getLat() + "," + location.getLng();
+                                  final SearchNearByRemote.SearchNearByFetchData listener, String nextPageToken) {
+        final String place = location.getLat() + "," + location.getLng();
         interfaceAPI.searchNearBy(place, "distance", type, keyword, KEY, nextPageToken).enqueue(
                 new Callback<PlaceResultResponse>() {
+                    //todo success
                     @Override
                     public void onResponse(Call<PlaceResultResponse> call, Response<PlaceResultResponse> response) {
-                        if (response.body().getResults().isEmpty()) {
-                            listener.searchPlaceEmpty();
-                        } else {
-                            listener.searchPlaceSuccess(response.body(), location, time, keyword, vehicle,
-                                    type, rate, nextPageToken);
-                        }
+                        listener.searchPlaceSuccess(response.body(), location, time, keyword, vehicle,
+                                type, rate);
                     }
 
                     @Override
@@ -58,6 +56,7 @@ public class SearchNearByDataSource implements SearchNearByRemote.SearchNearByDa
         String startLocation = location.getLat() + "," + location.getLng();
         String endLocation = result.getGeometry().getLocation().getLat() + "," +
                 result.getGeometry().getLocation().getLng();
+        if (vehicle.equals("bicycling")) vehicle = "walking";
         interfaceAPI.getDirection(startLocation, endLocation, vehicle, KEY).enqueue(
                 new Callback<DirectionResultResponse>() {
                     @Override

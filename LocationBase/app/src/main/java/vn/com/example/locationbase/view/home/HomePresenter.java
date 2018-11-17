@@ -2,6 +2,9 @@ package vn.com.example.locationbase.view.home;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import vn.com.example.locationbase.data.model.direction.DirectionResultResponse;
+import vn.com.example.locationbase.data.model.place.GoogleAddressResponse;
+import vn.com.example.locationbase.data.model.place.Location;
 import vn.com.example.locationbase.data.model.place.PlaceResultResponse;
 import vn.com.example.locationbase.data.reponsitory.HomeReponsitory;
 import vn.com.example.locationbase.data.source.remote.HomeDataSource;
@@ -48,6 +51,12 @@ public class HomePresenter implements HomeContact.Presenter, HomeDataSource.Home
         reponsitory.LOgin_User(this);
     }
 
+    //get address
+    @Override
+    public void getAddress(LatLng latLng) {
+        reponsitory.getAddress(latLng,this);
+    }
+
     @Override
     public void LoginSuccess() {
         view.LoginSuccess();
@@ -72,5 +81,31 @@ public class HomePresenter implements HomeContact.Presenter, HomeDataSource.Home
     @Override
     public void searchNearByFail(String error) {
         view.searchNearByError(error);
+    }
+
+    @Override
+    public void getAddressSucess(GoogleAddressResponse response) {
+        view.getAddressSucess(response);
+    }
+
+    @Override
+    public void getAddressFail() {
+        view.getAddressFail();
+    }
+
+
+    @Override
+    public void getDirectionSuccess(DirectionResultResponse response) {
+        view.getDirectionSuccess(response);
+    }
+
+    @Override
+    public void getDirectionFail() {
+        view.getDirectionFail();
+    }
+
+    @Override
+    public void direction(LatLng origin, LatLng destination) {
+        reponsitory.getDirection(origin,destination,this);
     }
 }

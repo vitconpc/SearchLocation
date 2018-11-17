@@ -1,52 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="10dp"
     android:background="@drawable/custom_background"
+    android:orientation="vertical"
+    android:padding="@dimen/dp_10"
     tools:context=".view.login.LoginActivity">
 
-
-    <EditText
-        android:background="@drawable/custom_edittext"
-        android:inputType="textEmailAddress"
-        android:ems="10"
-        android:id="@+id/edt_email"
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
-        android:hint="@string/enter_email" />
+        android:scrollbars="none"
+        android:layout_height="match_parent">
 
-    <EditText
-        android:background="@drawable/custom_edittext"
-        android:inputType="textPassword"
-        android:ems="10"
-        android:id="@+id/edt_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:hint="@string/enter_password" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <Button
-        android:background="@drawable/custom_button"
-        android:onClick="login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="70dp"
-        android:text="@string/login"
-        android:textAllCaps="false" />
+            <EditText
+                android:id="@+id/edt_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_80"
+                android:background="@drawable/custom_edittext"
+                android:ems="10"
+                android:hint="@string/enter_email"
+                android:inputType="textEmailAddress" />
 
-    <TextView
-        android:onClick="goToRegister"
-        android:textColor="#fcf94a"
-        android:textSize="18sp"
-        android:gravity="center_vertical|center_horizontal"
-        android:text="@string/register_here"
-        android:layout_marginTop="50dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+            <EditText
+                android:id="@+id/edt_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_50"
+                android:background="@drawable/custom_edittext"
+                android:ems="10"
+                android:hint="@string/enter_password"
+                android:inputType="textPassword" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dp_70"
+                android:background="@drawable/custom_button"
+                android:onClick="login"
+                android:text="@string/login"
+                android:textAllCaps="false" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/dp_50"
+                android:gravity="center_vertical|center_horizontal"
+                android:onClick="goToRegister"
+                android:text="@string/register_here"
+                android:textColor="#fcf94a"
+                android:textSize="@dimen/sp_18" />
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

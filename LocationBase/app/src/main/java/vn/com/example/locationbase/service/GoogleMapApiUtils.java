@@ -1,6 +1,6 @@
 package vn.com.example.locationbase.service;
 
-public class APIUtils {
+public class GoogleMapApiUtils {
     private static final String BASE_URL = "https://maps.googleapis.com/maps/api/";
     private static GoogleMapInterfaceAPI instance;
 
