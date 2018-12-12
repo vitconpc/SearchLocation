@@ -1,8 +1,11 @@
 package vn.com.example.locationbase.data.reponsitory;
 
+import android.content.Context;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import vn.com.example.locationbase.data.model.place.Location;
+import vn.com.example.locationbase.data.model.place_detail.PlaceDetail;
 import vn.com.example.locationbase.data.source.HomeRemoteDataSource;
 import vn.com.example.locationbase.data.source.remote.HomeDataSource;
 
@@ -21,22 +24,10 @@ public class HomeReponsitory {
         return instance;
     }
 
-    public void Logout_User(HomeDataSource.HomeFetchData listener){
-        datasource.LogOut(listener);
+    public void getData(HomeDataSource.HomeFetchData listener, Context context){
+        datasource.getData(listener,context);
     }
 
-    public void getData(HomeDataSource.HomeFetchData listener){
-        datasource.getData(listener);
-    }
-
-    public void LOgin_User(HomeDataSource.HomeFetchData listener){
-        datasource.checkLogin(listener);
-    }
-
-    public void searchNearBy(LatLng location,float range,String type, String keyword
-            ,HomeDataSource.HomeFetchData listener){
-        datasource.searchNearBy(location,range,type,keyword,listener);
-    }
 
     public void getAddress(LatLng latLng, HomeDataSource.HomeFetchData listener){
         datasource.getAddress(latLng,listener);
@@ -44,5 +35,17 @@ public class HomeReponsitory {
 
     public void getDirection(LatLng origin, LatLng destination, HomeDataSource.HomeFetchData listener){
         datasource.getDirection(origin,destination,listener);
+    }
+
+    public void getPlaceDetail(String placeID, HomeDataSource.HomeFetchData listener){
+        datasource.getPlaceDetail(placeID,listener);
+    }
+
+    public void savePlaceDetail(PlaceDetail detail, HomeDataSource.HomeFetchData listener,Context context){
+        datasource.savePlaceDetail(detail,listener,context);
+    }
+
+    public void getProfile(HomeDataSource.HomeFetchData listener, Context context){
+        datasource.getProfile(listener,context);
     }
 }

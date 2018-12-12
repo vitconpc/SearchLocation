@@ -1,25 +1,27 @@
 package vn.com.example.locationbase.data.source;
 
-import android.support.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-
+import android.content.Context;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import vn.com.example.locationbase.common.Base64AccountUtils;
+import vn.com.example.locationbase.common.Utils;
+import vn.com.example.locationbase.data.model.response.AccessToken;
+import vn.com.example.locationbase.data.model.response.ResponseBody;
 import vn.com.example.locationbase.data.source.remote.LoginDataSource;
+import vn.com.example.locationbase.service.ServerApiUtils;
+import vn.com.example.locationbase.service.ServiceInterfaceAPI;
 
 public class LoginRemoteDataSource implements LoginDataSource.LoginRemote {
     private static LoginRemoteDataSource dataSource;
-    private FirebaseAuth auth;
+    private ServiceInterfaceAPI Api;
 
     public LoginRemoteDataSource() {
-        auth = FirebaseAuth.getInstance();
+        Api = ServerApiUtils.getInstance();
     }
 
-    public synchronized static LoginRemoteDataSource getInstance(){
-        if (dataSource == null){
+    public synchronized static LoginRemoteDataSource getInstance() {
+        if (dataSource == null) {
             dataSource = new LoginRemoteDataSource();
         }
         return dataSource;
@@ -27,22 +29,31 @@ public class LoginRemoteDataSource implements LoginDataSource.LoginRemote {
 
 
     @Override
-    public void checkLogin(String email, String password, final LoginDataSource.LoginFetchData listener) {
-        auth.signInWithEmailAndPassword(email,password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()){
-                            FirebaseUser user = auth.getCurrentUser();
-                            if (user.isEmailVerified()){
-                                listener.loginSuccess();
-                                return;
-                            }
-                            listener.loginNotVerified("Email chưa được xác minh");
-                        }else {
-                            listener.wrongEmailorPassword("Sai Email hoặc mật khẩu");
-                        }
+    public void checkLogin(String email, String password,
+                           final LoginDataSource.LoginFetchData listener, final Context context) {
+        Api.login(Base64AccountUtils.getBase64Account(email, password)).enqueue(new Callback<ResponseBody<AccessToken>>() {
+            @Override
+            public void onResponse(Call<ResponseBody<AccessToken>> call, Response<ResponseBody<AccessToken>> response) {
+                switch (response.code()) {
+                    case 200:{
+                        Utils.saveAccessToken(context, response.body().getData());
+                        listener.loginSuccess();
                     }
-                });
+                    break;
+                    case 401:{
+                        listener.loginNotVerified("Vui lòng vào email để xác nhận");
+                    }
+                    break;
+                    default:{
+                        listener.loginNotVerified("Đăng nhập thất bại");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody<AccessToken>> call, Throwable t) {
+                listener.loginNotVerified("Vui lòng kiểm tra lại kết nối");
+            }
+        });
     }
 }

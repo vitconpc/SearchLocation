@@ -7,6 +7,7 @@
     android:orientation="horizontal">
 
     <RatingBar
+        android:theme="@style/RatingBar"
         android:id="@+id/rat_value"
         style="?attr/ratingBarStyleIndicator"
         android:layout_width="wrap_content"

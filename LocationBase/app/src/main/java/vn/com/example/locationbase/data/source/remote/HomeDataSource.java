@@ -1,46 +1,38 @@
 package vn.com.example.locationbase.data.source.remote;
 
+import android.content.Context;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import vn.com.example.locationbase.data.model.direction.DirectionResultResponse;
 import vn.com.example.locationbase.data.model.place.GoogleAddressResponse;
 import vn.com.example.locationbase.data.model.place.Location;
 import vn.com.example.locationbase.data.model.place.PlaceResultResponse;
+import vn.com.example.locationbase.data.model.place_detail.PlaceDetail;
+import vn.com.example.locationbase.data.model.response.User;
 
 public interface HomeDataSource {
     interface HomeRemote {
-        void LogOut(HomeDataSource.HomeFetchData listener);
 
-        void getData(HomeDataSource.HomeFetchData listener);
-
-        void checkLogin(HomeDataSource.HomeFetchData listener);
-
-        void searchNearBy(LatLng location, float range, String type
-                , String keyWord, HomeDataSource.HomeFetchData listener);
+        void getData(HomeDataSource.HomeFetchData listener, Context context);
 
         void getAddress(LatLng location, HomeDataSource.HomeFetchData listener);
 
+        void getPlaceDetail(String placeId, HomeDataSource.HomeFetchData listener);
+
         void getDirection(LatLng origin, LatLng destination, HomeFetchData listener);
+
+        void savePlaceDetail(PlaceDetail detail, HomeFetchData listener, Context context);
+
+        void getProfile(HomeFetchData listener, Context context);
+
     }
 
     interface HomeFetchData {
-        //logout
-        void LogOutSuccess();
-
         //get information
-        void getDataSuccess(String name, String email, String uri);
+        void getDataSuccess(User user);
 
         void getDataError(String error);
-
-        //login
-        void LoginSuccess();
-
-        void LoginFail();
-
-        //search near by
-        void searchNearBySuccess(PlaceResultResponse response);
-
-        void searchNearByFail(String error);
 
         void getAddressSucess(GoogleAddressResponse response);
 
@@ -49,5 +41,17 @@ public interface HomeDataSource {
         void getDirectionSuccess(DirectionResultResponse response);
 
         void getDirectionFail();
+
+        void getPlaceDetailSuccess(PlaceDetail placeDetail);
+
+        void getPlaceDetailError();
+
+        void saveSuccess();
+
+        void saveFail();
+
+        void getProfileSuccess(User user);
+
+        void getProfileError();
     }
 }

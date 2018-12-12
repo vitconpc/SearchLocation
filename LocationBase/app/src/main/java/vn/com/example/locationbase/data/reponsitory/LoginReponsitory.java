@@ -1,6 +1,8 @@
 package vn.com.example.locationbase.data.reponsitory;
 
 
+import android.content.Context;
+
 import vn.com.example.locationbase.data.source.LoginRemoteDataSource;
 import vn.com.example.locationbase.data.source.remote.LoginDataSource;
 
@@ -19,7 +21,7 @@ public class LoginReponsitory {
         return reponsitory;
     }
 
-    public void checkLogin(String email, String password, LoginDataSource.LoginFetchData listener) {
-        loginRemote.checkLogin(email, password, listener);
+    public void checkLogin(String email, String password, LoginDataSource.LoginFetchData listener, Context context) {
+        loginRemote.checkLogin(email, password, listener, context);
     }
 }

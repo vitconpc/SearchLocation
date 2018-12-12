@@ -1,8 +1,10 @@
 package vn.com.example.locationbase.data.source.remote;
 
+import android.content.Context;
+
 public interface LoginDataSource {
     interface LoginRemote {
-        void checkLogin(String email, String password, LoginFetchData listener);
+        void checkLogin(String email, String password, LoginFetchData listener, Context context);
     }
 
     interface LoginFetchData {

@@ -6,40 +6,36 @@
         <item
             android:id="@+id/nav_login"
             android:icon="@drawable/ic_login"
-            android:title="Đăng nhập" />
+            android:title="@string/login" />
         <item
             android:visible="false"
             android:id="@+id/nav_account"
             android:icon="@drawable/ic_account"
-            android:title="Tài khoản" />
+            android:title="@string/account" />
         <item
             android:id="@+id/nav_search_near_by_me"
             android:icon="@drawable/ic_search"
-            android:title="Tìm kiếm quanh bạn" />
+            android:title="@string/search_near_by" />
         <item
             android:id="@+id/nav_location_favorite"
             android:icon="@drawable/ic_favorite"
-            android:title="Địa điểm ưu thích" />
+            android:title="@string/favorite_location" />
         <item
             android:id="@+id/nav_clear_marker"
             android:icon="@drawable/ic_clear"
-            android:title="Xóa các điểm đánh dấu" />
+            android:title="@string/clear_marker" />
     </group>
 
-    <item android:title="Account">
+    <item android:title="@string/account">
         <menu>
             <item
                 android:id="@+id/nav_register"
                 android:icon="@drawable/ic_register"
-                android:title="Đăng ký" />
-            <item
-                android:id="@+id/nav_change_password"
-                android:icon="@drawable/ic_change_password"
-                android:title="Đổi mật khẩu" />
+                android:title="@string/register" />
             <item
                 android:id="@+id/nav_logout"
                 android:icon="@drawable/ic_logout"
-                android:title="Đăng xuất" />
+                android:title="@string/log_out" />
         </menu>
     </item>
 </menu>

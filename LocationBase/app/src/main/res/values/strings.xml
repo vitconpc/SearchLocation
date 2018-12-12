@@ -49,4 +49,23 @@
     <string name="save">Lưu</string>
     <string name="direction">Chỉ đường</string>
     <string name="restaurant">Nhà hàng</string>
+    <string name="account">Tài khoản</string>
+    <string name="search_near_by">Tìm kiếm quanh bạn</string>
+    <string name="favorite_location">Địa điểm ưu thích</string>
+    <string name="clear_marker">Xóa các điểm đánh dấu</string>
+    <string name="change_password">Đổi mật khẩu</string>
+    <string name="log_out">Đăng xuất</string>
+    <string name="user_no_logged_in">Chưa đăng nhập</string>
+    <string name="you_must_login_to_use_function">Bạn phải đăng nhập để thực hiện chức năng này</string>
+    <string name="not_have_item_place">Không có địa điểm nào được lưu</string>
+    <string name="detail_profile">Thông tin cá nhân</string>
+    <string name="search_near">Tìm lân cận</string>
+    <string name="update_info">Cập nhật thông tin</string>
+    <string name="update">Cập nhật</string>
+    <string name="back">Quay lại</string>
+    <string name="title_user_name">Tên người dùng</string>
+    <string name="title_birthday">Ngày sinh</string>
+    <string name="title_logined">Bạn đã đăng nhập</string>
+    <string name="error_upload_image">Tải ảnh lên không thành công</string>
+    <string name="not_select_marker_to_go">Bạn chưa chọn vị trí để đi tới</string>
 </resources>

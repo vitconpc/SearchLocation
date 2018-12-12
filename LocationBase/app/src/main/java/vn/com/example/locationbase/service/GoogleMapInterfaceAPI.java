@@ -6,6 +6,7 @@ import retrofit2.http.Query;
 import vn.com.example.locationbase.data.model.direction.DirectionResultResponse;
 import vn.com.example.locationbase.data.model.place.GoogleAddressResponse;
 import vn.com.example.locationbase.data.model.place.PlaceResultResponse;
+import vn.com.example.locationbase.data.model.place_detail.PlaceDetailResponse;
 
 public interface GoogleMapInterfaceAPI {
     @GET("place/nearbysearch/json?")
@@ -19,4 +20,8 @@ public interface GoogleMapInterfaceAPI {
 
     @GET("geocode/json?")
     Call<GoogleAddressResponse> getAddress(@Query("latlng") String latlon, @Query("key") String apiKey);
+
+    @GET("place/details/json?")
+    Call<PlaceDetailResponse> getPlaceDetail(@Query("placeid") String placeID, @Query("fields") String fields
+            , @Query("key") String apiKey);
 }

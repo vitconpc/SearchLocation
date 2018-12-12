@@ -14,24 +14,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vn.com.example.locationbase.R;
-import vn.com.example.locationbase.data.model.place_detail.PlaceDetail;
+import vn.com.example.locationbase.data.model.response.SaveLocation;
 
 public class FavoritePlaceAdapter extends RecyclerView.Adapter<FavoritePlaceAdapter.ViewHolder> {
 
     private Context context;
     private DetailCallback callback;
-    private List<PlaceDetail> placeDetails;
+    private List<SaveLocation> locations;
 
     public FavoritePlaceAdapter(Context context, DetailCallback callback) {
         this.context = context;
         this.callback = callback;
-        placeDetails = new ArrayList<>();
-
+        locations = new ArrayList<>();
     }
 
-    public void setPlaceDetails(List<PlaceDetail> placeDetails) {
-        this.placeDetails.clear();
-        this.placeDetails.addAll(placeDetails);
+    public void setLocations(List<SaveLocation> locations) {
+        this.locations.clear();
+        this.locations.addAll(locations);
         notifyDataSetChanged();
     }
 
@@ -44,12 +43,12 @@ public class FavoritePlaceAdapter extends RecyclerView.Adapter<FavoritePlaceAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        viewHolder.bindData(placeDetails.get(i));
+        viewHolder.bindData(locations.get(i));
     }
 
     @Override
     public int getItemCount() {
-        return placeDetails.size();
+        return locations.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -70,22 +69,21 @@ public class FavoritePlaceAdapter extends RecyclerView.Adapter<FavoritePlaceAdap
             txtAddress.setSelected(true);
         }
 
-        public void bindData(PlaceDetail detail) {
-            txtAddress.setText(detail.getFormattedAddress());
-            txtName.setText(detail.getName());
-            ratValue.setRating(detail.getRating());
+        public void bindData(SaveLocation location) {
+            txtAddress.setText(location.getFormattedAddress());
+            txtName.setText(location.getName());
+            ratValue.setRating(location.getRating());
         }
 
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.image_delete: {
-                    placeDetails.remove(getAdapterPosition());
-                    notifyDataSetChanged();
+                    callback.deleteItem(getAdapterPosition());
                 }
                 break;
                 default: {
-                    callback.handlerClickItem(placeDetails.get(getAdapterPosition()));
+                    callback.handlerClickItem(locations.get(getAdapterPosition()));
                 }
                 break;
             }

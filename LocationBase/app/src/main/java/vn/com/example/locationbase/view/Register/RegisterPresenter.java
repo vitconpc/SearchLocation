@@ -1,6 +1,7 @@
 package vn.com.example.locationbase.view.Register;
 
-import vn.com.example.locationbase.data.model.user.User;
+import vn.com.example.locationbase.data.model.body.RegisterBody;
+import vn.com.example.locationbase.data.model.response.User;
 import vn.com.example.locationbase.data.reponsitory.RegisterReponsitory;
 import vn.com.example.locationbase.data.source.remote.RegisterDataSource;
 
@@ -15,13 +16,13 @@ public class RegisterPresenter implements RegisterContact.Presenter, RegisterDat
     }
 
     @Override
-    public void registerUser(User user) {
-        reponsitory.registerUser(user,this);
+    public void registerUser(RegisterBody body) {
+        reponsitory.registerUser(body, this);
     }
 
     @Override
-    public void registerSuccess() {
-        view.showRegisterSuccess();
+    public void registerSuccess(String userName) {
+        view.showRegisterSuccess(userName);
     }
 
     @Override

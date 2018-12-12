@@ -1,14 +1,14 @@
 package vn.com.example.locationbase.view.Register;
 
-import vn.com.example.locationbase.data.model.user.User;
+import vn.com.example.locationbase.data.model.body.RegisterBody;
 
 public interface RegisterContact {
     interface View{
-        void showRegisterSuccess();
+        void showRegisterSuccess(String userName);
         void showRegisterError(String error);
     }
 
     interface Presenter{
-        void registerUser(User user);
+        void registerUser(RegisterBody body);
     }
 }

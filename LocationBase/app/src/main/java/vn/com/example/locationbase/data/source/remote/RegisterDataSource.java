@@ -1,14 +1,14 @@
 package vn.com.example.locationbase.data.source.remote;
 
-import vn.com.example.locationbase.data.model.user.User;
+import vn.com.example.locationbase.data.model.body.RegisterBody;
 
 public interface RegisterDataSource {
     interface RegisterRemote {
-        void registerUser(User user,RegisterFetchData listener);
+        void registerUser(RegisterBody body, RegisterFetchData listener);
     }
 
     interface RegisterFetchData {
-        void registerSuccess();
+        void registerSuccess(String userName);
         void registerError(String error);
     }
 }

@@ -6,36 +6,49 @@ import vn.com.example.locationbase.data.model.direction.DirectionResultResponse;
 import vn.com.example.locationbase.data.model.place.GoogleAddressResponse;
 import vn.com.example.locationbase.data.model.place.Location;
 import vn.com.example.locationbase.data.model.place.PlaceResultResponse;
+import vn.com.example.locationbase.data.model.place_detail.PlaceDetail;
+import vn.com.example.locationbase.data.model.response.User;
 
 public interface HomeContact {
     interface View {
-        void LogOutSuccess();
         //login
-        void getDataSuccess(String name, String email, String uri);
+        void getDataSuccess(User user);
+
         void getDataError(String error);
-        //check Login
-        void LoginSuccess();
-        void LoginFail();
-        //search near by
-        void searchNearBySuccess(PlaceResultResponse response);
-        void searchNearByError(String error);
 
         void getAddressSucess(GoogleAddressResponse response);
+
         void getAddressFail();
 
         void getDirectionSuccess(DirectionResultResponse response);
+
         void getDirectionFail();
+
+        void getPlaceDetailSuccess(PlaceDetail detail);
+
+        void getPlaceDetailFail();
+
+        void saveSuccess();
+
+        void savrFail();
+
+        void getProfileSuccess(User user);
+
+        void getProfileFail();
 
     }
 
     interface Presenter {
-        void LogOut();
+
         void getData();
-        void Login();
+
         void getAddress(LatLng latLng);
-        void searchNearBy(LatLng location,float range, String type, String keyword);
 
         void direction(LatLng origin, LatLng destination);
+
+        void savePlaceDetail(PlaceDetail detail);
+
+        void getProfile();
     }
 
 }

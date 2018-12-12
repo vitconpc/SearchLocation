@@ -8,10 +8,11 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 
 public class Function {
     public static double CalculationByDistance(double lat1, double lng1,
-                                               double lat2, double lng2){
+                                               double lat2, double lng2) {
         int Radius = 6371;
         double dLat = Math.toRadians(lat2 - lat1);
         double dLon = Math.toRadians(lng2 - lng1);
@@ -33,9 +34,14 @@ public class Function {
     }
 
     @SuppressLint("MissingPermission")
-    public static void getCurrentLocation(Context context, OnSuccessListener<Location> callback){
+    public static void getCurrentLocation(Context context, OnSuccessListener<Location> callback) {
         LocationServices.getFusedLocationProviderClient(context)
                 .getLastLocation()
                 .addOnSuccessListener(callback);
+    }
+
+    public static String formatDate(long date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        return dateFormat.format(date);
     }
 }

@@ -1,6 +1,7 @@
 package vn.com.example.locationbase.view.Register;
 
 import android.Manifest;
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,29 +11,39 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Random;
+import java.util.Calendar;
+import java.util.Date;
 
 import vn.com.example.locationbase.R;
-import vn.com.example.locationbase.data.model.user.User;
+import vn.com.example.locationbase.common.Constants;
+import vn.com.example.locationbase.common.Function;
+import vn.com.example.locationbase.data.model.body.RegisterBody;
+import vn.com.example.locationbase.data.model.response.User;
 import vn.com.example.locationbase.view.login.LoginActivity;
+import vn.com.example.locationbase.view.update_infor.UpdateInforActivity;
 
 public class RegisterActivity extends AppCompatActivity implements RegisterContact.View {
 
     private EditText edtName;
     private EditText edtPassword;
     private EditText edtEmail;
-    private EditText edtRepassword;
     private ImageView imgAvatar;
-    private TextView txtCode;
+    private TextView txtBirthday;
     private Uri resultUri;
     private ProgressDialog dialog;
     private RegisterPresenter presenter;
+    private Toolbar toolbar;
+    private Date birthday;
+    private Calendar calendar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,16 +52,31 @@ public class RegisterActivity extends AppCompatActivity implements RegisterConta
         initView();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home: {
+                onBackPressed();
+                break;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void initView() {
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_back);
+        getSupportActionBar().setTitle(R.string.register);
+
+        calendar = Calendar.getInstance();
         edtName = findViewById(R.id.edt_name);
         edtEmail = findViewById(R.id.edt_email);
         edtPassword = findViewById(R.id.edt_password);
-        edtRepassword = findViewById(R.id.edt_repassword);
         imgAvatar = findViewById(R.id.img_avatar);
-        txtCode = findViewById(R.id.txt_code);
-        Random r = new Random();
-        int code = 10000000 + r.nextInt(90000000);
-        txtCode.setText("Mã code: " + code);
+        txtBirthday = findViewById(R.id.txt_birthday);
+        birthday = calendar.getTime();
+        txtBirthday.setText(Function.formatDate(birthday.getTime()));
         presenter = new RegisterPresenter(this);
     }
 
@@ -77,14 +103,6 @@ public class RegisterActivity extends AppCompatActivity implements RegisterConta
             edtPassword.setError("Mật khẩu phải từ 6 ký tự trở lên");
             return;
         }
-        if (edtRepassword.getText().toString().trim().isEmpty()) {
-            edtRepassword.setError("Vui lòng nhập lại mật khẩu");
-            return;
-        }
-        if (!edtRepassword.getText().toString().trim().equals(edtPassword.getText().toString().trim())) {
-            edtRepassword.setError("Mật khẩu không trùng khớp");
-            return;
-        }
         if (resultUri == null) {
             Toast.makeText(this, "Vui lòng chọn ảnh đại diện", Toast.LENGTH_SHORT).show();
             return;
@@ -93,26 +111,25 @@ public class RegisterActivity extends AppCompatActivity implements RegisterConta
         dialog = new ProgressDialog(this);
         dialog.setMessage("Đang đăng ký tài khoản...");
         dialog.show();
-//        String name, String email, String password, String code, String isSharing,
-//                String lat, String lng, String avatarUri
-        User user = new User(edtName.getText().toString().trim(),edtEmail.getText().toString().trim(),
-                edtPassword.getText().toString().trim(),txtCode.getText().toString(),"false",
-                "na","na",resultUri.toString());
-        presenter.registerUser(user);
+        RegisterBody body = new RegisterBody();
+        body.setAvatarUrl(resultUri.toString());
+        body.setBirthDay(birthday.getTime());
+        body.setFullName(edtName.getText().toString().trim());
+        body.setUsername(edtEmail.getText().toString().trim());
+        body.setPassword(edtPassword.getText().toString().trim());
+        presenter.registerUser(body);
+        //hay co phai tai lai file google json dayk
     }
 
     public void selectImage(View view) {
-            checkQuyen();
-            Intent intent = new Intent();
-            intent.setAction(Intent.ACTION_PICK);
-            intent.setType("image/*");
-            startActivityForResult(intent, 12);
+        checkQuyen();
+        gotoImage();
     }
 
     private void checkQuyen() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
-                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},100);
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
             }
         }
     }
@@ -120,17 +137,21 @@ public class RegisterActivity extends AppCompatActivity implements RegisterConta
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode==100 && grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
-//            Intent intent = new Intent();
-//            intent.setAction(Intent.ACTION_GET_CONTENT);
-//            intent.setType("image/*");
-//            startActivityForResult(intent, 12);
-        }else {
+        if (requestCode == 100 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            gotoImage();
+        } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},100);
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
             }
         }
 
+    }
+
+    private void gotoImage() {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        startActivityForResult(intent, 12);
     }
 
     @Override
@@ -140,26 +161,37 @@ public class RegisterActivity extends AppCompatActivity implements RegisterConta
             resultUri = data.getData();
             imgAvatar.setImageURI(resultUri);
         }
-//        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-//            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-//            if (resultCode == RESULT_OK) {
-//                resultUri = result.getUri();
-//                imgAvatar.setImageURI(resultUri);
-//            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-//                Exception error = result.getError();
-//            }
-//        }
     }
 
     @Override
-    public void showRegisterSuccess() {
+    public void showRegisterSuccess(String userName) {
         dialog.hide();
-        Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.putExtra(Constants.USER_NAME, userName);
+        startActivity(intent);
+        finish();
     }
 
     @Override
     public void showRegisterError(String error) {
         dialog.hide();
         Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+    }
+
+    public void pickDate(View view) {
+        DatePickerDialog.OnDateSetListener callBack = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, month);
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                birthday = calendar.getTime();
+                txtBirthday.setText(Function.formatDate(birthday.getTime()));
+            }
+        };
+
+        DatePickerDialog dialog = new DatePickerDialog(RegisterActivity.this, callBack, calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        dialog.show();
     }
 }

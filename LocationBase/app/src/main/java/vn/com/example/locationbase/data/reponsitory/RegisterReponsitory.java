@@ -1,6 +1,7 @@
 package vn.com.example.locationbase.data.reponsitory;
 
-import vn.com.example.locationbase.data.model.user.User;
+import vn.com.example.locationbase.data.model.body.RegisterBody;
+import vn.com.example.locationbase.data.model.response.User;
 import vn.com.example.locationbase.data.source.RegisterRemoteDataSource;
 import vn.com.example.locationbase.data.source.remote.RegisterDataSource;
 
@@ -19,7 +20,7 @@ public class RegisterReponsitory {
         return instance;
     }
 
-    public void registerUser(User user, RegisterDataSource.RegisterFetchData listener) {
-        datasource.registerUser(user, listener);
+    public void registerUser(RegisterBody body, RegisterDataSource.RegisterFetchData listener) {
+        datasource.registerUser(body, listener);
     }
 }

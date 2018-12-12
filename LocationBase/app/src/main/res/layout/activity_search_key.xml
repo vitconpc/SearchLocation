@@ -4,9 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/custom_background"
     android:orientation="vertical"
+    android:background="#fff"
     tools:context=".view.search_near_by.SearchKeyActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#6d92fd"
+        app:titleTextColor="@android:color/white" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -22,7 +29,7 @@
                 android:id="@+id/edt_enter_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_30"
+                android:layout_marginTop="@dimen/dp_10"
                 android:layout_marginBottom="@dimen/dp_10"
                 android:background="@drawable/custom_edittext"
                 android:hint="@string/enter_time"
@@ -78,7 +85,7 @@
                 android:id="@+id/edt_enter_keyword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_10"
                 android:hint="@string/enter_keyword" />
 
             <LinearLayout
@@ -87,7 +94,7 @@
                 android:orientation="horizontal">
 
                 <Button
-                    style="?attr/buttonBarButtonStyle"
+                    android:textColor="@android:color/white"
                     android:background="@drawable/custom_button"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -98,11 +105,11 @@
                     android:textAllCaps="false" />
 
                 <Button
-                    style="?attr/buttonBarButtonStyle"
+                    android:textColor="@android:color/white"
                     android:background="@drawable/custom_button"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_margin="30dp"
+                    android:layout_margin="@dimen/dp_30"
                     android:layout_weight="1"
                     android:onClick="Search"
                     android:text="@string/search"

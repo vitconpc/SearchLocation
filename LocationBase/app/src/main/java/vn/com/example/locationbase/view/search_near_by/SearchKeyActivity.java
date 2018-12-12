@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -38,6 +40,7 @@ public class SearchKeyActivity extends AppCompatActivity implements View.OnClick
     private SearchKeyPreSenter preSenter;
     private ArrayList<PlaceResult> results;
     private ProgressDialog dialog;
+    private Toolbar toolbar;
 
     private String vehicle = "driving";
     private RateItem itemRate = new RateItem(0.0f, " > 0.0");
@@ -49,6 +52,17 @@ public class SearchKeyActivity extends AppCompatActivity implements View.OnClick
         setContentView(R.layout.activity_search_key);
         initView();
         initData();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home: {
+                onBackPressed();
+                break;
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void initData() {
@@ -64,6 +78,10 @@ public class SearchKeyActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void initView() {
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_back);
+        getSupportActionBar().setTitle(R.string.search_near);
         edtTime = findViewById(R.id.edt_enter_time);
         edtKeyword = findViewById(R.id.edt_enter_keyword);
         rbnBicycling = findViewById(R.id.rbn_bicycling);

@@ -26,6 +26,15 @@ public class PlaceDetail implements Parcelable {
     @SerializedName("place_id")
     @Expose
     private String placeId;
+    @SerializedName("rating")
+    @Expose
+    private float rating;
+    @SerializedName("types")
+    @Expose
+    private List<String> types = null;
+    @SerializedName("vicinity")
+    @Expose
+    private String vicinity;
 
     public PlaceDetail() {
     }
@@ -116,17 +125,6 @@ public class PlaceDetail implements Parcelable {
     public void setVicinity(String vicinity) {
         this.vicinity = vicinity;
     }
-
-    @SerializedName("rating")
-    @Expose
-    private float rating;
-    @SerializedName("types")
-    @Expose
-    private List<String> types = null;
-    @SerializedName("vicinity")
-    @Expose
-    private String vicinity;
-
     @Override
     public int describeContents() {
         return 0;

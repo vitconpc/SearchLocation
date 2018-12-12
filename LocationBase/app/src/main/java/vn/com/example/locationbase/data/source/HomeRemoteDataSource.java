@@ -1,38 +1,41 @@
 package vn.com.example.locationbase.data.source;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import vn.com.example.locationbase.common.Utils;
+import vn.com.example.locationbase.data.model.body.SaveLocationBody;
 import vn.com.example.locationbase.data.model.direction.DirectionResultResponse;
 import vn.com.example.locationbase.data.model.place.GoogleAddressResponse;
 import vn.com.example.locationbase.data.model.place.Location;
+import vn.com.example.locationbase.data.model.place_detail.PlaceDetail;
+import vn.com.example.locationbase.data.model.place_detail.PlaceDetailResponse;
+import vn.com.example.locationbase.data.model.response.ResponseBody;
+import vn.com.example.locationbase.data.model.response.User;
 import vn.com.example.locationbase.data.source.remote.HomeDataSource;
 import vn.com.example.locationbase.service.GoogleMapApiUtils;
 import vn.com.example.locationbase.service.GoogleMapInterfaceAPI;
+import vn.com.example.locationbase.service.ServerApiUtils;
+import vn.com.example.locationbase.service.ServiceInterfaceAPI;
 
 public class HomeRemoteDataSource implements HomeDataSource.HomeRemote {
     private static HomeRemoteDataSource instance;
-    FirebaseAuth auth;
-    private FirebaseUser user;
-    private DatabaseReference databaseReference;
     private String current_user_name, current_user_email, current_user_avatarUrl;
     private GoogleMapInterfaceAPI mApi;
     private String KEY = "AIzaSyBqo1CVj_866CQTVT1lCwXVBog4fCVtUGc";
 
+    private ServiceInterfaceAPI serviceInterfaceAPI;
+
     public HomeRemoteDataSource() {
         mApi = GoogleMapApiUtils.getInstance();
+        serviceInterfaceAPI = ServerApiUtils.getInstance();
     }
+
 
     public static synchronized HomeRemoteDataSource getInstance() {
         if (instance == null) {
@@ -42,66 +45,64 @@ public class HomeRemoteDataSource implements HomeDataSource.HomeRemote {
     }
 
     @Override
-    public void LogOut(HomeDataSource.HomeFetchData listener) {
-        auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
-        if (user != null) {
-            auth.signOut();
-            listener.LogOutSuccess();
-        }
-    }
-
-    @Override
-    public void getData(final HomeDataSource.HomeFetchData listener) {
-        auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("Users");
-        databaseReference.addValueEventListener(new ValueEventListener() {
+    public void getData(final HomeDataSource.HomeFetchData listener, Context context) {
+        //context
+        serviceInterfaceAPI.getLogin(Utils.getBearerAccessToken(context)).enqueue(new Callback<ResponseBody<User>>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (user != null) {
-                    current_user_name = dataSnapshot.child(user.getUid()).child("name").getValue(String.class);
-                    current_user_email = dataSnapshot.child(user.getUid()).child("email").getValue(String.class);
-                    current_user_avatarUrl = dataSnapshot.child(user.getUid()).child("avatarUri").getValue(String.class);
-                    listener.getDataSuccess(current_user_name, current_user_email, current_user_avatarUrl);
-                } else listener.getDataError("Không có người dùng");
-//                txtName.setText(current_user_name);
-//                txtEmail.setText(current_user_email);
-//                Picasso.get().load(current_user_avatarUrl).into(imgAvatar);
+            public void onResponse(Call<ResponseBody<User>> call, Response<ResponseBody<User>> response) {
+                switch (response.code()){
+                    case 200:
+                        listener.getDataSuccess(response.body().getData());
+                        break;
+                }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
+            public void onFailure(Call<ResponseBody<User>> call, Throwable t) {
+                listener.getDataError("Kiểm tra lại mạng");
             }
         });
+        //get login thanh cong hay ko?
+        //trước là check ở firebase h lam tren kia thi get trong shareprefer ak?
+//
+//        auth = FirebaseAuth.getInstance();
+//        user = auth.getCurrentUser();
+//        databaseReference = FirebaseDatabase.getInstance().getReference().child("Users");
+//        databaseReference.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                if (user != null) {
+//                    current_user_name = dataSnapshot.child(user.getUid()).child("name").getValue(String.class);
+//                    current_user_email = dataSnapshot.child(user.getUid()).child("email").getValue(String.class);
+//                    current_user_avatarUrl = dataSnapshot.child(user.getUid()).child("avatarUri").getValue(String.class);
+//                    listener.getDataSuccess(current_user_name, current_user_email, current_user_avatarUrl);
+//                } else listener.getDataError("Không có người dùng");
+////                txtName.setText(current_user_name);
+////                txtEmail.setText(current_user_email);
+////                Picasso.get().load(current_user_avatarUrl).into(imgAvatar);
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
     }
 
     @Override
-    public void checkLogin(HomeDataSource.HomeFetchData listener) {
-        auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
-        if (user == null) {
-            listener.LoginSuccess();
-        } else {
-            listener.LoginFail();
-        }
-    }
+    public void getPlaceDetail(String placeId, final HomeDataSource.HomeFetchData listener) {
+        String fileds = "name,rating,type,vicinity,formatted_address,geometry,place_id,formatted_phone_number";
+        mApi.getPlaceDetail(placeId, fileds, KEY).enqueue(new Callback<PlaceDetailResponse>() {
+            @Override
+            public void onResponse(Call<PlaceDetailResponse> call, Response<PlaceDetailResponse> response) {
+                listener.getPlaceDetailSuccess(response.body().getResult());
+            }
 
-    @Override
-    public void searchNearBy(LatLng location, float range, String type, String keyWord, final HomeDataSource.HomeFetchData listener) {
-//        String locate = location.latitude+","+location.longitude;
-//        mApi.searchNearBy(locate,range,type,keyWord,KEY).enqueue(new Callback<PlaceResultResponse>() {
-////            @Override
-////            public void onResponse(Call<PlaceResultResponse> call, Response<PlaceResultResponse> response) {
-////                listener.searchNearBySuccess(response.body());
-////            }
-////
-////            @Override
-////            public void onFailure(Call<PlaceResultResponse> call, Throwable t) {
-////                listener.searchNearByFail("Vui lòng kiểm tra lại kết nối mạng");
-////            }
-////        });
+            @Override
+            public void onFailure(Call<PlaceDetailResponse> call, Throwable t) {
+                listener.getPlaceDetailError();
+            }
+        });
     }
 
     @Override
@@ -137,6 +138,52 @@ public class HomeRemoteDataSource implements HomeDataSource.HomeRemote {
                         listener.getDirectionFail();
                     }
                 });
+    }
 
+    @Override
+    public void savePlaceDetail(PlaceDetail detail, final HomeDataSource.HomeFetchData listener, Context context) {
+        serviceInterfaceAPI.saveLocation(Utils.getBearerAccessToken(context), new SaveLocationBody(detail))
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        switch (response.code()) {
+                            case 200:
+                                listener.saveSuccess();
+                                break;
+                            default:
+                                listener.saveFail();
+                                break;
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        listener.getPlaceDetailError();
+                    }
+                });
+    }
+
+    @Override
+    public void getProfile(final HomeDataSource.HomeFetchData listener, Context context) {
+        serviceInterfaceAPI.getProfile(Utils.getBearerAccessToken(context)).enqueue(new Callback<ResponseBody<User>>() {
+            @Override
+            public void onResponse(Call<ResponseBody<User>> call, Response<ResponseBody<User>> response) {
+                switch (response.code()) {
+                    case 200: {
+                        listener.getProfileSuccess(response.body().getData());
+                    }
+                    break;
+                    default: {
+                        listener.getProfileError();
+                    }
+                    break;
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody<User>> call, Throwable t) {
+                listener.getProfileError();
+            }
+        });
     }
 }
